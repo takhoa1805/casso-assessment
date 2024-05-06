@@ -16,7 +16,7 @@ router.get('/success',function(req,res,next){
 })
 
 router.get('/cancel',function(req,res,next){
-  res.render('fail',{title:'ejs'})
+  res.render('cancel',{title:'ejs'})
 })
 
 module.exports = router;
