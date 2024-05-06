@@ -53,6 +53,29 @@ router.get('/pay/:id',async(req,res,next) =>{
 
 router.post('/receive-hook',async(req,res) => {
   console.log(req.body);
+  return res.send("Hello world");
+})
+
+
+router.post('/verification/:id',async(req,res) =>{
+  const id = req.params.id;
+  const payOS = new PayOS(process.env.PAYOS_CLIENT_ID, 
+    process.env.PAYOS_API_KEY, 
+    process.env.PAYOS_CHECKSUM_KEY);
+  
+  const webhookUrl = 'https://casso-assessment.onrender.com/users/receive-hook';
+
+  try{
+
+  } catch(error){
+    console.error(error);
+    return res.json({
+      error: -1,
+      message: "failed",
+      data: null,
+    });
+  }
+  
 })
 
 module.exports = router;
