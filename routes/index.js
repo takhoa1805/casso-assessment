@@ -15,7 +15,7 @@ router.get('/success',function(req,res,next){
   res.render('success',{title:'ejs'})
 })
 
-router.get('/fail',function(req,res,next){
+router.get('/cancel',function(req,res,next){
   res.render('fail',{title:'ejs'})
 })
 
