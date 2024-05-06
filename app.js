@@ -3,16 +3,40 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const dotenv = require('dotenv');
+const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html',require('ejs').renderFile);
-app.set('view engine','html')
+// app.engine('html',require('ejs').renderFile);
+app.set('view engine','ejs');
+
+
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST,PUT,DELETE,PATCH',
+    credentials: true,
+  }),
+);
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+})
+
+
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
