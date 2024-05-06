@@ -13,6 +13,8 @@ continue_btn.addEventListener('click',async()=>{
     //     console.log("Error happens: " + error);
     // }
 
+
+
     window.location.href = "https://drive.google.com/file/d/1DaoW9CH7ri29mHZ5Qtxl6uMo-wH3X4ol/view";
 
 })

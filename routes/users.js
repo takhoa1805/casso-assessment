@@ -6,15 +6,16 @@ const PayOS = require('@payos/node');
 /* GET users listing. */
 router.post('/pay', async (req, res, next)=> {
   const body ={
-    orderCode: Number(String(Date.now()).slice(-6)),
-    amount: 10000,
-    description: 'Processing on order',
-    returnUrl: `${process.env.DOMAIN}/success`,
-    cancelUrl: `${process.env.DOMAIN}/cancel`,
-    buyerName: 'John Doe',
-    buyerEmail: 'johndoe@email.com',
-    buyerPhone: '0123456789'
+    "orderCode": Number(String(Date.now()).slice(-6)),
+    "amount": 10000,
+    "description": 'Processing on order',
+    "returnUrl": `${process.env.DOMAIN}/success`,
+    "cancelUrl": `${process.env.DOMAIN}/cancel`,
+    "buyerName": "Nguyen Van A",
+    "buyerEmail": "buyer-email@gmail.com",
+    "buyerPhone": "090xxxxxxx",
   }
+  console.log(process.env.DOMAIN);
   
   try{
     const payOS = new PayOS(process.env.PAYOS_CLIENT_ID, 
@@ -30,5 +31,28 @@ router.post('/pay', async (req, res, next)=> {
 
 
 });
+
+
+router.get('/pay/:id',async(req,res,next) =>{
+  try{
+    const id = req.params.id;
+    const payOS = new PayOS(process.env.PAYOS_CLIENT_ID, 
+      process.env.PAYOS_API_KEY, 
+      process.env.PAYOS_CHECKSUM_KEY);
+
+    const paymentLink = await payOS.getPaymentLinkInformation(id);
+
+    console.log("this is order id: " + paymentLink); 
+    
+    return res.json(paymentLink);
+  
+  } catch(error){
+    console.log(error);
+  }
+})
+
+router.post('/receive-hook',async(req,res) => {
+  console.log(req.body);
+})
 
 module.exports = router;
