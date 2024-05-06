@@ -10,7 +10,7 @@ router.post('/pay', async (req, res, next)=> {
     amount: 10000,
     description: 'Processing on order',
     returnUrl: `${process.env.DOMAIN}/success`,
-    cancelUrl: `${process.env.DOMAIN}/cancel`
+    cancelUrl: `${process.env.DOMAIN}/fail`
   }
   
   try{
