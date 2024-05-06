@@ -57,7 +57,8 @@ router.get('/verify/:id',async(req,res) =>{
     const url = `https://api-merchant.payos.vn/v2/payment-requests/${id}`;
 
     if (!id){
-      res.json({isValid:false})
+      res.redirect('/');
+      return;
     }
 
     fetch(`https://api-merchant.payos.vn/v2/payment-requests/${id}`,{

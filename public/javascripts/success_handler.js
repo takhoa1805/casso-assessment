@@ -1,5 +1,6 @@
 const VERIFY_URL = `https://casso-assessment.onrender.com/users/verify`;
 
+
 document.addEventListener('DOMContentLoaded',async()=>{
     // GET PARAMS 
     const urlParams = new URLSearchParams(window.location.search);
