@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const PayOS = require('@payos/node');
 
-
-/* GET users listing. */
+// CREATE PAYMENT LINK AND NAVIGATE TO THAT PAGE
 router.post('/pay', async (req, res, next)=> {
   const body ={
     "orderCode": Number(String(Date.now()).slice(-6)),
@@ -33,6 +32,7 @@ router.post('/pay', async (req, res, next)=> {
 });
 
 
+// GET PAYMENT INFORMATION
 router.get('/pay/:id',async(req,res,next) =>{
   try{
     const id = req.params.id;
@@ -42,7 +42,6 @@ router.get('/pay/:id',async(req,res,next) =>{
 
     const paymentLink = await payOS.getPaymentLinkInformation(id);
 
-    console.log("this is order id: " + paymentLink); 
     
     return res.json(paymentLink);
   
@@ -51,31 +50,86 @@ router.get('/pay/:id',async(req,res,next) =>{
   }
 })
 
-router.post('/receive-hook',async(req,res) => {
-  console.log(req.body);
-  return res.send("Hello world");
-})
-
-
-router.post('/verification/:id',async(req,res) =>{
-  const id = req.params.id;
-  const payOS = new PayOS(process.env.PAYOS_CLIENT_ID, 
-    process.env.PAYOS_API_KEY, 
-    process.env.PAYOS_CHECKSUM_KEY);
-  
-  const webhookUrl = 'https://casso-assessment.onrender.com/users/receive-hook';
-
+// RETURN AN ORDER ID'S STATUS
+router.get('/verify/:id',async(req,res) =>{
   try{
+    const id = req.params.id;
+    const url = `https://api-merchant.payos.vn/v2/payment-requests/${id}`;
+
+    if (!id){
+      res.json({isValid:false})
+    }
+
+    fetch(`https://api-merchant.payos.vn/v2/payment-requests/${id}`,{
+      method:'GET',
+      headers:{
+        "x-client-id":`${process.env.PAYOS_CLIENT_ID}`,
+        "x-api-key":`${process.env.PAYOS_API_KEY}`
+      }
+    })    
+      .then(response => response.json())
+      .then(response => {
+        return res.json({ status:response.data.status});
+      })
+      .catch(error=>{
+        console.log("Error happens: "+error);
+        return res.json({error:error});
+      });
+
 
   } catch(error){
-    console.error(error);
-    return res.json({
-      error: -1,
-      message: "failed",
-      data: null,
-    });
+    console.log("Error happens: " + error);
   }
   
 })
 
+
+// VERIFY ORDER ID AND NAVIGATE TO DOWNLOAD LINK
+router.get('/link/:id',async(req,res) =>{
+  try{
+    const id = req.params.id;
+
+    if (!id){
+      res.json({isValid:false})
+    }
+
+    fetch(`https://api-merchant.payos.vn/v2/payment-requests/${id}`,{
+      method:'GET',
+      headers:{
+        "x-client-id":`${process.env.PAYOS_CLIENT_ID}`,
+        "x-api-key":`${process.env.PAYOS_API_KEY}`
+      }
+    })    
+      .then(response => response.json())
+      .then(response => {
+
+        if (!response.data.status){
+          res.redirect('/');
+          return;
+        }
+
+        if (response.data.status === 'PAID'){
+          console.log("this is called");
+          res.redirect("https://drive.google.com/file/d/1DaoW9CH7ri29mHZ5Qtxl6uMo-wH3X4ol/view");
+          return;
+        } else{
+          res.redirect('/');
+          return;
+        };
+
+      })
+      .catch(error=>{
+        console.log("Error happens: "+error);
+        res.redirect('/');
+        return res.json({error:error});
+      });
+
+
+  } catch(error){
+    console.log("Error happens: " + error);
+    res.redirect('/');
+    return res.json({error:error});
+  }
+  
+})
 module.exports = router;

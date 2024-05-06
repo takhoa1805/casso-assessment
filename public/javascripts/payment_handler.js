@@ -1,4 +1,6 @@
 
+// OBSOLETE FILE
+
 // User hits  continue button in checkout page
 var continue_btn = document.getElementById('continue-btn');
 continue_btn.addEventListener('click',async()=>{
@@ -15,7 +17,7 @@ continue_btn.addEventListener('click',async()=>{
 
 
 
-    window.location.href = "https://drive.google.com/file/d/1DaoW9CH7ri29mHZ5Qtxl6uMo-wH3X4ol/view";
+    // window.location.href = "https://drive.google.com/file/d/1DaoW9CH7ri29mHZ5Qtxl6uMo-wH3X4ol/view";
 
 })
 

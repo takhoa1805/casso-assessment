@@ -1,23 +1,47 @@
+const VERIFY_URL = `https://casso-assessment.onrender.com/users/verify`;
+
 document.addEventListener('DOMContentLoaded',async()=>{
+    // GET PARAMS 
     const urlParams = new URLSearchParams(window.location.search);
-    // Access a specific parameter by its name
+
+    // If there is no param
+    if (urlParams.size === 0){
+        window.alert("You are not authorized to access this page");
+        window.location.href = '/';
+        return;
+    }
+
+    // Check if orderid is valid
+    if (!urlParams.get('id')){
+        window.alert("Invalid access");
+        window.location.href='/';
+        return;
+    }   else{
+        try{
+        const res = await fetch(`${VERIFY_URL}/${urlParams.get('id')}`,{
+            method:'GET',
+        });
+
+        const data = await res.json();
+
+        if (data.status !=='PAID'){
+            window.alert("Invalid order");
+            window.location.href='/';
+            return;
+        }
+
+        }   catch(error){
+            window.alert("Error happens");
+            window.location.href='/';
+            return;
+        }
+
+    }
+
+    // Display information
     document.getElementById('order-code').innerHTML=`Order code: ${urlParams.get('orderCode')}`
     document.getElementById('status').innerHTML=`Status    : ${urlParams.get('status').toLowerCase()}`
     
-    try{
-        const res = await fetch(`http://localhost:3000/users/pay/${urlParams.get('id')}`,
-            {
-                method:'GET',
-            }
-        );
-
-        const data = await res.json();
-        console.log(data);
-
-    }   catch(error){
-        console.log(error);
-    }
-
 
 })
 
@@ -25,13 +49,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
 // User hits  continue button in checkout page
 var continue_btn = document.getElementById('continue-btn');
 continue_btn.addEventListener('click',async()=>{
-    console.log("Continue button is pressed");
-
     const urlParams = new URLSearchParams(window.location.search);
 
-    
-
-    window.location.href = "https://drive.google.com/file/d/1DaoW9CH7ri29mHZ5Qtxl6uMo-wH3X4ol/view";
+    // Navigate to final verification and go to download page
+    window.location.href = `/users/link/${urlParams.get('id')}`;
 
 })
 
